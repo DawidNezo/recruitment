@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EmployeeResource extends JsonResource
@@ -9,18 +10,20 @@ class EmployeeResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
             'surname' => $this->surname,
             'email' => $this->email,
-            'restaurants' => $this->restaurants,
-            'restaurant_ids' => $this->restaurants->pluck('id'),
+            'restaurants' => RestaurantResource::collection($this->whenLoaded('restaurants')),
+            'restaurant_ids' => $this->whenLoaded('restaurants', function () {
+                return $this->restaurants->pluck('id');
+            }),
         ];
     }
 }

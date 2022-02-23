@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Restaurant extends Model
 {
@@ -13,11 +15,25 @@ class Restaurant extends Model
         'display_name'
     ];
 
-    public function scopeAssignable($query) {
-        $query->has('employees', '<=', config('enums.limit_employee'))->orDoesntHave('employees');
+    /**
+     * Scopes
+     */
+    public function scopeAssignable(Builder $query, int $employee_id): Builder
+    {
+        return $query->where(function ($q) use ($employee_id) {
+            return $q->has('employees', '<', config('enums.limit_employee'))
+                ->orDoesntHave('employees')
+                ->orWhereHas('employees', function ($qq) use ($employee_id) {
+                    $qq->whereId($employee_id);
+                });
+        });
     }
 
-    public function employees() {
+    /**
+     * Relations
+     */
+    public function employees(): BelongsToMany
+    {
         return $this->belongsToMany(Employee::class, 'restaurant_employee');
     }
 }

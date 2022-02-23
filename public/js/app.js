@@ -23657,14 +23657,14 @@ function useEmployees() {
   }();
 
   var getAssignableRestaurants = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5() {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(id) {
       var response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return axios__WEBPACK_IMPORTED_MODULE_2___default().get('/api/restaurants/assignable');
+              return axios__WEBPACK_IMPORTED_MODULE_2___default().get('/api/restaurants/assignable/' + id);
 
             case 2:
               response = _context5.sent;
@@ -23678,7 +23678,7 @@ function useEmployees() {
       }, _callee5);
     }));
 
-    return function getAssignableRestaurants() {
+    return function getAssignableRestaurants(_x4) {
       return _ref5.apply(this, arguments);
     };
   }();
@@ -23723,7 +23723,7 @@ function useEmployees() {
       }, _callee6, null, [[1, 8]]);
     }));
 
-    return function assignRestaurant(_x4) {
+    return function assignRestaurant(_x5) {
       return _ref6.apply(this, arguments);
     };
   }();
@@ -23745,7 +23745,7 @@ function useEmployees() {
       }, _callee7);
     }));
 
-    return function destroyEmployee(_x5) {
+    return function destroyEmployee(_x6) {
       return _ref7.apply(this, arguments);
     };
   }();

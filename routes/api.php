@@ -23,19 +23,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Route::apiResource('employee', EmployeeController::class);
 
-Route::controller(EmployeeController::class)->prefix('employees')->group(function () {
-    Route::get('index','index');
-    Route::get('show/{employee}','show');
+Route::controller(EmployeeController::class)->prefix('employees')->name('employees.')->group(function () {
+    Route::get('index','index')->name('index');
+    Route::get('show/{employee}','show')->name('show');
     Route::middleware('auth')->group(function () {
-        Route::post('store','store');
-        Route::patch('update/{employee}','update');
-        Route::patch('assign/{employee}/restaurant','assignRestaurant');
-        Route::delete('destroy/{employee}','destroy');
+        Route::post('store','store')->name('store');
+        Route::patch('update/{employee}','update')->name('update');
+        Route::patch('assign/{employee}/restaurant','assignRestaurant')->name('assign.restaurant');
+        Route::delete('destroy/{employee}','destroy')->name('destroy');
     });
 });
 
-Route::controller(RestaurantController::class)->prefix('restaurants')->group(function () {
+Route::controller(RestaurantController::class)->prefix('restaurants')->name('restaurants.')->group(function () {
     Route::middleware('auth')->group(function () {
-        Route::get('assignable','assignable');
+        Route::get('assignable/{employee_id}','assignable')->name('assignable');
     });
 });

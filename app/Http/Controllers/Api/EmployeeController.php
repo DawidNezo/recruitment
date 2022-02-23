@@ -6,20 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeAssignRestaurantRequest;
 use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Interfaces\EmployeeInterface;
 use App\Models\Employee;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class EmployeeController extends Controller
 {
+    private $employeeService;
+
+    public function __construct(EmployeeInterface $employeeService)
+    {
+        $this->employeeService = $employeeService;
+    }
+
     /**
      * @OA\Get(
      *      path="/api/employees/index",
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -28,11 +35,11 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function index(): AnonymousResourceCollection
     {
-        return EmployeeResource::collection(Employee::with('restaurants')->get());
+        return $this->employeeService->getEmployees();
     }
 
     /**
@@ -41,7 +48,7 @@ class EmployeeController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -50,11 +57,11 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function store(EmployeeRequest $request): EmployeeResource
     {
-        return new EmployeeResource(Employee::create($request->validated()));
+        return $this->employeeService->storeEmployee($request);
     }
 
     /**
@@ -72,7 +79,7 @@ class EmployeeController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -81,11 +88,11 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function show(Employee $employee): EmployeeResource
     {
-        return new EmployeeResource($employee->load('restaurants'));
+        return $this->employeeService->showEmployee($employee);
     }
 
     /**
@@ -94,7 +101,7 @@ class EmployeeController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -103,13 +110,11 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function update(EmployeeRequest $request, Employee $employee): EmployeeResource
     {
-        $employee->update($request->validated());
-
-        return new EmployeeResource($employee);
+        return $this->employeeService->updateEmployee($request, $employee);
     }
 
     /**
@@ -118,7 +123,7 @@ class EmployeeController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -127,14 +132,11 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function destroy(Employee $employee): Response
     {
-        $employee->restaurants()->detach();
-        $employee->delete();
-
-        return response()->noContent();
+        return $this->employeeService->destroyEmployee($employee);
     }
 
     /**
@@ -152,7 +154,7 @@ class EmployeeController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
+     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -161,12 +163,10 @@ class EmployeeController extends Controller
      *          response=403,
      *          description="Forbidden"
      *      )
-     *     )
+     * )
      */
     public function assignRestaurant(EmployeeAssignRestaurantRequest $request, Employee $employee): EmployeeResource
     {
-        $employee->restaurants()->sync($request->restaurant_ids);
-
-        return new EmployeeResource($employee);
+        return $this->employeeService->assignRestaurant($request, $employee);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Validator;
 
 class EmployeeAssignRestaurantRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class EmployeeAssignRestaurantRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,25 +23,18 @@ class EmployeeAssignRestaurantRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
+        $limit_restaurant = config('enums.limit_restaurant');
         return [
-            'restaurant_ids' => 'array'
+            'restaurant_ids' => "array|max:{$limit_restaurant}"
         ];
     }
 
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
-    public function withValidator($validator)
+    public function messages(): array
     {
-        $validator->after(function ($validator) {
-            if (count($this->restaurant_ids) > config('enums.limit_restaurant')) {
-                $validator->errors()->add('restaurants', __('messages.restaurant_limit'));
-            }
-        });
+        return [
+            'restaurant_ids.max' => __('messages.restaurant_limit'),
+        ];
     }
 }

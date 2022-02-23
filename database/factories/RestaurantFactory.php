@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EmployeeFactory extends Factory
+class RestaurantFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,9 +14,7 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->firstName(),
-            'surname' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'display_name' => $this->faker->company(),
         ];
     }
 }

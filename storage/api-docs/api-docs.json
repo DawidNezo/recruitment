@@ -126,6 +126,17 @@
         "/api/restaurants/assignable": {
             "get": {
                 "operationId": "6eb6be58d7dd928df2386886b2e91a68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Employee id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation"

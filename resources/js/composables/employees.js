@@ -47,8 +47,8 @@ export default function useEmployees() {
         }
     }
 
-    const getAssignableRestaurants = async () => {
-        let response = await axios.get('/api/restaurants/assignable');
+    const getAssignableRestaurants = async (id) => {
+        let response = await axios.get('/api/restaurants/assignable/' + id);
         assignableRestaurants.value = response.data.data;
     }
 
